@@ -1,0 +1,41 @@
+<div class="edit-address-block shipping-address">
+    <fieldset class="shipping-method-block">
+        <h5>${Resource.msg('heading.shipping.method', 'checkout', null)}</h5>
+
+        <isinclude template="checkout/shipping/shippingMethod" />
+    </fieldset>
+
+    <fieldset class="shipment-selector-block ${shippingModel.selectedShippingMethod.storePickupEnabled ? 'd-none' : ''}">
+        <div class="form-group">
+            <label class="form-control-label" for="shipmentSelector">
+                ${Resource.msg('heading.ship.to.address', 'checkout', null)}
+            </label>
+
+            <isinclude template="checkout/shipping/shipmentSelector" />
+
+            <div class="invalid-feedback"></div>
+            <isif condition="${!shippingModel.productLineItems.items[0].fromStoreId}">
+                <div class="row">
+                    <a class="col-6 text-center btn-show-details">${Resource.msg('action.update.address', 'checkout', null)}</a>
+                    <a class="col-6 text-center btn-add-new">${Resource.msg('action.add.new', 'checkout', null)}</a>
+                </div>
+            </isif>
+        </div>
+    </fieldset>
+
+    <fieldset class="pickup-in-store" data-url="${shippingModel.pickupInstoreUrl}">
+        <isif condition="${shippingModel.productLineItems.items[0].fromStoreId}">
+            <isinclude url="${URLUtils.url('Stores-GetStoreById', 'storeId', shippingModel.productLineItems.items[0].fromStoreId)}"/>
+        </isif>
+    </fieldset>
+
+    <button class="btn btn-block btn-outline-primary btn-margin change-store ${shippingModel.selectedShippingMethod.storePickupEnabled && shippingModel.productLineItems.items[0].fromStoreId ? '' : 'd-none'}" name="changeStore" value="changeStore">
+        ${Resource.msg('button.change.store','instorePickup',null)}
+    </button>
+
+    <div class="shipping-address-form">
+        <fieldset class="shipping-address-block">
+            <isinclude template="checkout/shipping/shippingAddress" />
+        </fieldset>
+    </div>
+</div>

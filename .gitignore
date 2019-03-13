@@ -1,0 +1,12 @@
+### begin: recipe
+.DS_Store
+.idea
+.gitmodules
+.develop
+.vscode
+dw.json
+node_modules
+cartridge/static/*/css
+cartridge/static/*/fonts
+cartridge/static/*/js
+### end: recipe

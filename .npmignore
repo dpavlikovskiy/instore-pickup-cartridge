@@ -1,0 +1,18 @@
+### begin: recipe
+.DS_Store
+.build
+.develop
+.gitignore
+.gitmodules
+.idea
+.project
+.tern-project
+.vscode
+*.md
+*.zip
+dw.json
+package-lock.json
+cartridge/client/**
+cartridge/client/**
+data
+### end: recipe
