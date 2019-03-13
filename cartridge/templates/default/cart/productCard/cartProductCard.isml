@@ -23,9 +23,8 @@
 
                         <isinclude template="cart/productCard/cartProductCardAvailability" />
 
-                        <div class="hidden-xs-down edit-add-to-wishlist">
+                        <div class="hidden-xs-down">
                             <a href="${"#"}" class="edit" title="${Resource.msg('link.edit.item','cart',null)}">${Resource.msg('link.edit.item','cart',null)}</a>
-                            <a href="${"#"}" class="add-to-wishlist" title="${Resource.msg('link.add.to.wishlist','cart',null)}">${Resource.msg('link.add.to.wishlist','cart',null)}</a>
                         </div>
                     </div>
                 </div>

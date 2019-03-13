@@ -1,5 +1,9 @@
 <isif condition="${shippingModel.shippingAddress || shippingModel.productLineItems.items[0].fromStoreId}">
-    <h5>${Resource.msg('heading.shipping.to', 'checkout', null)}</h5>
+    <isif condition="${shippingModel.selectedShippingMethod.storePickupEnabled === true}">
+        <h5>${Resource.msg('label.instore.pickup.from', 'instorePickup', null)}</h5>
+    <iselse>
+        <h5>${Resource.msg('heading.shipping.to', 'checkout', null)}</h5>
+    </isif>
     <p>
         <isif condition="${shippingModel.shippingAddress
             && shippingModel.shippingAddress.firstName

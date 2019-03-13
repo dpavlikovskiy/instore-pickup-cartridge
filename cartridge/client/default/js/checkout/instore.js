@@ -285,8 +285,8 @@ module.exports = {
         });
     },
     updateAddressLabelText: function () {
-        $('body').on('checkout:updateAddressLabelText', function (e, data) {
-            var addressLabelText = data.selectedShippingMethod.storePickupEnabled ? data.order.resources.storeAddress : data.order.resources.shippingAddress;
+        $('body').on('shipping:updateAddressLabelText', function (e, data) {
+            var addressLabelText = data.selectedShippingMethod.storePickupEnabled ? data.resources.storeAddress : data.resources.shippingAddress;
             data.shippingAddressLabel.text(addressLabelText);
         });
     },
