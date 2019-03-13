@@ -1,7 +1,7 @@
 'use strict';
 
-var baseCheckout = require('../base/checkout/checkout');
-var baseSummaryHelpers = require('../base/checkout/summary');
+var baseCheckout = require('base/checkout/checkout');
+var baseSummaryHelpers = require('base/checkout/summary');
 var pluginBilling = require('./billing');
 var pluginShipping = require('./shipping');
 
@@ -33,7 +33,7 @@ baseCheckout.updateCheckoutView = function () {
 [pluginShipping, pluginBilling].forEach(function (library) {
     Object.keys(library).forEach(function (key) {
         if (typeof library[key] === 'object') {
-            baseCheckout[key] = Object.assign({}, baseCheckout[key], library[key]);
+            baseCheckout[key] = $.extend({}, baseCheckout[key], library[key]);
         } else {
             baseCheckout[key] = library[key];
         }

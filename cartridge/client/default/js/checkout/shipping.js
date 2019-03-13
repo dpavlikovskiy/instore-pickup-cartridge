@@ -1,7 +1,7 @@
 'use strict';
 
-var addressHelpers = require('../base/checkout/address');
-var base = require('../base/checkout/shipping');
+var addressHelpers = require('base/checkout/address');
+var base = require('base/checkout/shipping');
 
 /**
  * updates the shipping address selector within shipping forms

@@ -56,6 +56,7 @@ module.exports = {
     placeOrder: base.placeOrder,
     savePaymentInstrumentToWallet: base.savePaymentInstrumentToWallet,
     getRenderedPaymentInstruments: base.getRenderedPaymentInstruments,
-    copyBillingAddressToBasket: copyBillingAddressToBasket
+    copyBillingAddressToBasket: copyBillingAddressToBasket,
+    setGift: base.setGift
 
 };

@@ -83,6 +83,8 @@ server.append('SubmitShipping', function (req, res, next) {
                             shippingMethod: viewData.shippingMethod
                         };
                         COHelpers.copyShippingAddressToShipment(storeAddress, viewDataShipment);
+
+                        COHelpers.setGift(viewDataShipment, false, null);
                     });
                 }
 

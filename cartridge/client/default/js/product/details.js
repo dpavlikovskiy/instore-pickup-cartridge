@@ -1,7 +1,7 @@
 'use strict';
 
-var base = require('../base/product/base');
-var detail = require('../base/product/detail');
+var base = require('base/product/base');
+var detail = require('base/product/detail');
 
 /**
  * Registering on change event on quantity selector. If store has been selected, exist function,
@@ -30,6 +30,6 @@ function availability() {
     });
 }
 
-var exportDetails = Object.assign({}, base, detail, { availability: availability });
+var exportDetails = $.extend({}, base, detail, { availability: availability });
 
 module.exports = exportDetails;

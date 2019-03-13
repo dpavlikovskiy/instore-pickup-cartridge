@@ -1,3 +1,0 @@
-<select name="shipmentSelector" class="addressSelector form-control custom-select" data-create-shipment-url="${URLUtils.https('CheckoutAddressServices-CreateNewAddress')}">
-    <isinclude template="checkout/shipping/shipmentSelectorOptions" />
-</select>

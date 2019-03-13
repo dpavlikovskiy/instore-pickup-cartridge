@@ -11,7 +11,7 @@
     <isloop items="${pdict.order.shipping}" var="aShippingModel">
         <isif condition="${((aShippingModel.UUID === shippingModel.UUID) && aShippingModel.shippingAddress) || !aShippingModel.selectedShippingMethod.storePickupEnabled}">
         <option 
-            class="multi-shipping
+            class="multi-shipping"
             value="${aShippingModel.UUID}"
             ${!shippingModel.matchingAddressId && aShippingModel.UUID === shippingModel.UUID ? 'selected="selected"' : '' }
             data-first-name="${aShippingModel.shippingAddress.firstName||''}" data-last-name="${aShippingModel.shippingAddress.lastName||''}"

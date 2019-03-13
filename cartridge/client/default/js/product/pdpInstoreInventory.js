@@ -1,6 +1,6 @@
 'use strict';
 
-var storeLocator = require('../base/storeLocator/storeLocator');
+var storeLocator = require('base/storeLocator/storeLocator');
 
 /**
  * Generates the modal window on the first call.
@@ -130,6 +130,29 @@ function updateQuantityOptions(searchPID, storeId) {
         success: function (response) {
             // Hide from dropdown quantity greater than inventory
             var productAtsValue = response.atsValue;
+            var availabilityValue = '';
+
+            var $productContainer = $('.product-detail[data-pid="' + searchPID + '"]');
+
+            if (!response.product.readyToOrder) {
+                availabilityValue = '<div>' + response.resources.info_selectforstock + '</div>';
+            } else {
+                response.product.messages.forEach(function (message) {
+                    availabilityValue += '<div>' + message + '</div>';
+                });
+            }
+
+            $($productContainer).trigger('product:updateAvailability', {
+                product: response.product,
+                $productContainer: $productContainer,
+                message: availabilityValue,
+                resources: response.resources
+            });
+
+            $('button.add-to-cart, button.add-to-cart-global, button.update-cart-product-global').trigger('product:updateAddToCart', {
+                product: response.product, $productContainer: $productContainer
+            });
+
             var quantityDropdownLength = $(quantityOptionSelector).length;
 
             restoreQuantitySelection(searchPID);

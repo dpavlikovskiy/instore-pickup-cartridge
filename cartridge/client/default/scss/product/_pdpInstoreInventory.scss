@@ -1,7 +1,7 @@
-@import "base/variables";
+@import "~base/variables";
 @import "bootstrap/scss/mixins/breakpoints";
 @import "bootstrap/scss/variables";
-@import "base/storeLocator/storeLocator";
+@import "~base/storeLocator/storeLocator";
 
 .in-store-inventory-dialog {
     max-width: 56.25em;

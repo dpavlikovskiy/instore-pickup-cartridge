@@ -108,14 +108,28 @@ server.replace('FindStores', function (req, res, next) {
 });
 
 server.get('getAtsValue', function (req, res, next) {
+    var Resource = require('dw/web/Resource');
+
     var productId = req.querystring.pid;
     var storeId = req.querystring.storeId;
     var quantitySelected = req.querystring.quantitySelected;
 
     var instorePUstoreHelpers = require('*/cartridge/scripts/helpers/instorePickupStoreHelpers');
 
+    var instoreInventory = instorePUstoreHelpers.getStoreInventory(storeId, productId, quantitySelected);
+
     var productAtsValue = {
-        atsValue: instorePUstoreHelpers.getStoreInventory(storeId, productId, quantitySelected)
+        atsValue: instoreInventory,
+        product: {
+            available: !!instoreInventory,
+            readyToOrder: !!instoreInventory,
+            messages: [
+                Resource.msg('label.instock', 'common', null)
+            ]
+        },
+        resources: {
+            info_selectforstock: Resource.msg('label.ats.notavailable', 'instorePickup', null)
+        }
     };
 
     res.json(productAtsValue);
