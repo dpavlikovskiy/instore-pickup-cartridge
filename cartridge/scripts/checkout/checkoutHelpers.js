@@ -1,6 +1,7 @@
 'use strict';
 
 var base = module.superModule;
+var collections = require('*/cartridge/scripts/util/collections');
 
 /**
  * Copies a raw address object to the basket billing address
@@ -33,6 +34,28 @@ function copyBillingAddressToBasket(address, basket) {
     }
 }
 
+/**
+ * Loop through all shipments and make sure all not null
+ * @param {dw.order.LineItemCtnr} lineItemContainer - Current users's basket
+ * @returns {boolean} - allValid
+ */
+function ensureValidShipments(lineItemContainer) {
+    var shipments = lineItemContainer.shipments;
+    var storeAddress = true;
+    var allValid = collections.every(shipments, function (shipment) {
+        if (shipment) {
+            var hasStoreID = shipment.custom && shipment.custom.fromStoreId;
+            if (shipment.shippingMethod.custom && shipment.shippingMethod.custom.storePickupEnabled && !hasStoreID) {
+                storeAddress = false;
+            }
+            var address = shipment.shippingAddress;
+            return address && address.address1 && storeAddress;
+        }
+        return false;
+    });
+    return allValid;
+}
+
 module.exports = {
     prepareShippingForm: base.prepareShippingForm,
     prepareBillingForm: base.prepareBillingForm,
@@ -42,7 +65,7 @@ module.exports = {
     copyCustomerAddressToBilling: base.copyCustomerAddressToBilling,
     copyShippingAddressToShipment: base.copyShippingAddressToShipment,
     getFirstNonDefaultShipmentWithProductLineItems: base.getFirstNonDefaultShipmentWithProductLineItems,
-    ensureValidShipments: base.ensureValidShipments,
+    ensureValidShipments: ensureValidShipments,
     ensureNoEmptyShipments: base.ensureNoEmptyShipments,
     recalculateBasket: base.recalculateBasket,
     getProductLineItem: base.getProductLineItem,

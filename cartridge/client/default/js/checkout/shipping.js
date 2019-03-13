@@ -2,6 +2,7 @@
 
 var addressHelpers = require('base/checkout/address');
 var base = require('base/checkout/shipping');
+var baseFormHelpers = require('base/checkout/formErrors');
 
 /**
  * updates the shipping address selector within shipping forms
@@ -107,7 +108,129 @@ function updateShippingInformation(shipping, order, customer, options) {
     });
 }
 
+/**
+ * updates the shipping method radio buttons within shipping forms
+ * @param {Object} shipping - the shipping (shipment model) model
+ */
+function updateShippingMethods(shipping) {
+    var uuidEl = $('input[value=' + shipping.UUID + ']');
+    if (uuidEl && uuidEl.length > 0) {
+        $.each(uuidEl, function (shipmentIndex, el) {
+            var form = el.form;
+            if (!form) return;
+
+            var $shippingMethodList = $('.shipping-method-list', form);
+
+            if ($shippingMethodList && $shippingMethodList.length > 0) {
+                $shippingMethodList.empty();
+                var shippingMethods = shipping.applicableShippingMethods;
+                var selected = shipping.selectedShippingMethod || {};
+                var shippingMethodFormID = form.name + '_shippingAddress_shippingMethodID';
+                //
+                // Create the new rows for each shipping method
+                //
+                $.each(shippingMethods, function (methodIndex, shippingMethod) {
+                    var tmpl = $('#shipping-method-template').clone();
+                    // set input
+                    $('input', tmpl)
+                        .prop('id', 'shippingMethod-' + shippingMethod.ID)
+                        .prop('name', shippingMethodFormID)
+                        .prop('value', shippingMethod.ID)
+                        .attr('checked', shippingMethod.ID === selected.ID)
+                        .attr('data-pickup', shippingMethod.storePickupEnabled);
+
+                    $('label', tmpl)
+                        .prop('for', 'shippingMethod-' + shippingMethod.ID);
+                    // set shipping method name
+                    $('.display-name', tmpl).text(shippingMethod.displayName);
+                    // set or hide arrival time
+                    if (shippingMethod.estimatedArrivalTime) {
+                        $('.arrival-time', tmpl)
+                            .text('(' + shippingMethod.estimatedArrivalTime + ')')
+                            .show();
+                    }
+                    // set shipping cost
+                    $('.shipping-cost', tmpl).text(shippingMethod.shippingCost);
+                    $shippingMethodList.append(tmpl.html());
+                });
+            }
+        });
+    }
+
+    $('body').trigger('shipping:updateShippingMethods', { shipping: shipping });
+}
+
+base.saveMultiShipInfo = function () {
+    $('.btn-save-multi-ship').on('click', function (e) {
+        e.preventDefault();
+
+        // Save address to checkoutAddressBook
+        var form = $(this).closest('form');
+        var $rootEl = $(this).closest('.shipping-content');
+        var data = $(form).serialize();
+        var url = $(form).attr('action');
+
+        var checkedShippingMethod = $('input[name=dwfrm_shipping_shippingAddress_shippingMethodID]:checked', form);
+        var isStorePickUpMethod = checkedShippingMethod.attr('data-pickup');
+        var storeId = $("input[name='storeId']", form).val();
+        var errorMsg = 'Before you can continue to the next step, you must select a store.';
+
+        if (isStorePickUpMethod === 'true' && (storeId === undefined)) {
+            base.methods.createErrorNotification(errorMsg);
+        } else {
+            $rootEl.spinner().start();
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: data
+            })
+            .done(function (response) {
+                baseFormHelpers.clearPreviousErrors(form);
+                if (response.error) {
+                    if (response.fieldErrors && response.fieldErrors.length) {
+                        response.fieldErrors.forEach(function (error) {
+                            if (Object.keys(error).length) {
+                                baseFormHelpers.loadFormErrors(form, error);
+                            }
+                        });
+                    } else if (response.serverErrors && response.serverErrors.length) {
+                        $.each(response.serverErrors, function (index, element) {
+                            base.methods.createErrorNotification(element);
+                        });
+                    }
+                } else {
+                    // Update UI from response
+                    $('body').trigger('checkout:updateCheckoutView',
+                        {
+                            order: response.order,
+                            customer: response.customer
+                        }
+                    );
+
+                    base.methods.viewMultishipAddress($rootEl);
+                }
+
+                if (response.order && response.order.shippable) {
+                    $('button.submit-shipping').attr('disabled', null);
+                }
+
+                $rootEl.spinner().stop();
+            })
+            .fail(function (err) {
+                if (err.responseJSON.redirectUrl) {
+                    window.location.href = err.responseJSON.redirectUrl;
+                }
+
+                $rootEl.spinner().stop();
+            });
+        }
+        return false;
+    });
+};
+
 base.methods.updateShippingInformation = updateShippingInformation;
 base.methods.updateShippingAddressSelector = updateShippingAddressSelector;
+base.methods.updateShippingMethods = updateShippingMethods;
 
 module.exports = base;

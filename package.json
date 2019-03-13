@@ -1,6 +1,6 @@
 {
     "name": "@midiu/instore-pickup",
-    "version": "v3.2.0",
+    "version": "v3.3.0",
     "description": "New overlay cartridge for In-store Pickup",
     "main": "index.js",
     "author": "Syed Shehroz Hussain <s.hussain@salesforce.com>",

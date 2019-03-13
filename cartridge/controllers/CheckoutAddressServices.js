@@ -55,6 +55,7 @@ server.append('AddNewAddress', function (req, res, next) {
         var shipmentUUID = viewData.shipmentUUID;
         var basket = BasketMgr.getCurrentBasket();
         var shipment = ShippingHelper.getShipmentByUUID(basket, shipmentUUID);
+
         if (shipment) {
             if (req.form.storeId) {
                 ShippingHelper.markShipmentForPickup(shipment, req.form.storeId);
